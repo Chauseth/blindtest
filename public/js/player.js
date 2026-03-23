@@ -12,7 +12,6 @@ let players  = {};
 let teams    = {};
 let ytPlayer  = null;
 let ytReady   = false;
-let ytVisible = false;
 
 // ─── DOM ──────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -25,7 +24,11 @@ $('btn-join').addEventListener('click', joinGame);
 $('input-code').addEventListener('keydown', e => e.key === 'Enter' && $('input-name').focus());
 $('input-name').addEventListener('keydown', e => e.key === 'Enter' && joinGame());
 $('buzz-btn').addEventListener('click', doBuzz);
-$('btn-toggle-yt').addEventListener('click', toggleYtPlayer);
+$('volume-slider').addEventListener('input', function () {
+  const vol = parseInt(this.value, 10);
+  if (ytPlayer && ytReady) ytPlayer.setVolume(vol);
+  $('volume-icon').textContent = vol === 0 ? '🔇' : vol < 50 ? '🔉' : '🔊';
+});
 
 // Forcer majuscules sur le code
 $('input-code').addEventListener('input', function() {
@@ -160,10 +163,34 @@ function flashBackground(color) {
   main.classList.add(`flash-${color}`);
 }
 
+// ─── Son buzzer ───────────────────────────────────────────────
+function playBuzzSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(260, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.25);
+
+    gain.gain.setValueAtTime(0.22, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.35);
+    osc.onended = () => ctx.close();
+  } catch (_) {}
+}
+
 // ─── Buzz ─────────────────────────────────────────────────────
 function doBuzz() {
   if (gameStatus !== 'playing') return;
   socket.emit('buzz');
+  playBuzzSound();
   // Feedback haptique sur mobile
   if (navigator.vibrate) navigator.vibrate([50, 30, 80]);
 }
@@ -213,7 +240,7 @@ window.onYouTubeIframeAPIReady = function () {
 };
 
 function initYtPlayer(videoId, playlistId, currentTime) {
-  const playerVars = { controls: 0, rel: 0, modestbranding: 1, mute: 1 };
+  const playerVars = { controls: 0, rel: 0, modestbranding: 1 };
   if (playlistId) {
     playerVars.listType = 'playlist';
     playerVars.list = playlistId;
@@ -229,14 +256,13 @@ function initYtPlayer(videoId, playlistId, currentTime) {
     height: '100%', width: '100%',
     videoId: videoId || '',
     playerVars,
-    events: { onReady: () => { ytReady = true; } },
+    events: {
+      onReady: () => {
+        ytReady = true;
+        ytPlayer.setVolume(parseInt($('volume-slider').value, 10));
+      },
+    },
   });
-}
-
-function toggleYtPlayer() {
-  ytVisible = !ytVisible;
-  $('yt-player-wrapper').classList.toggle('hidden', !ytVisible);
-  $('btn-toggle-yt').textContent = ytVisible ? '🎵 Masquer le lecteur' : '🎵 Afficher le lecteur';
 }
 
 // ─── Socket events ────────────────────────────────────────────
@@ -289,7 +315,7 @@ socket.on('round-updated', ({ round }) => {
 });
 
 socket.on('youtube-sync', ({ action, videoId, playlistId, currentTime }) => {
-  $('btn-toggle-yt').classList.remove('hidden');
+  $('volume-control').classList.remove('hidden');
 
   if (action === 'load') {
     initYtPlayer(videoId, playlistId, currentTime);

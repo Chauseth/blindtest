@@ -385,6 +385,20 @@ input::placeholder { color: var(--text-muted); }
 .form-group label { font-size: .85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
 .error-msg { color: var(--red); font-size: .85rem; font-weight: 600; }
 
+/* ─── Volume control joueur ─── */
+.volume-control {
+  display: flex; align-items: center; gap: .75rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 999px; padding: .5rem 1.25rem;
+  width: 100%; max-width: 280px;
+}
+.volume-icon { font-size: 1.2rem; flex-shrink: 0; user-select: none; }
+.volume-slider {
+  flex: 1; width: 100%; cursor: pointer;
+  accent-color: var(--primary);
+  height: 4px;
+}
+
 /* ─── Flash animation quand on buzze ─── */
 @keyframes flash-green {
   0%   { background: rgba(46,204,113,.4); }
