@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animateur – BlindTest</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!-- ═══ ÉCRAN DE CRÉATION ═══ -->
+<div id="screen-create" class="join-page">
+  <div class="join-card">
+    <div class="jc-title">
+      <span class="jc-icon">🎛️</span>
+      <h1>Nouvelle partie</h1>
+      <p>Créez une partie et communiquez le code à vos joueurs</p>
+    </div>
+    <button class="btn btn-primary w-full" id="btn-create" style="padding:1rem; font-size:1.1rem;">
+      Créer la partie
+    </button>
+    <p id="create-error" class="error-msg hidden"></p>
+  </div>
+</div>
+
+<!-- ═══ INTERFACE PRINCIPALE ═══ -->
+<div id="screen-host" class="host-layout hidden">
+
+  <!-- Header -->
+  <header class="host-header">
+    <span class="logo">🎵 BlindTest</span>
+
+    <div class="room-code-display">
+      <span>CODE</span>
+      <span class="code" id="header-code">------</span>
+      <button class="btn btn-ghost btn-sm" onclick="copyCode()" title="Copier le code">📋</button>
+    </div>
+
+    <div id="header-status" class="status-pill lobby">
+      <span id="status-dot">●</span>
+      <span id="status-text">Lobby</span>
+    </div>
+
+    <div class="round-display">
+      <span class="text-muted" style="font-size:.85rem;">Manche</span>
+      <button class="btn btn-ghost btn-icon btn-sm" id="btn-round-dec">−</button>
+      <span id="round-val">1</span>
+      <button class="btn btn-ghost btn-icon btn-sm" id="btn-round-inc">+</button>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" id="btn-toggle-status">▶ Démarrer</button>
+      <button class="btn btn-danger btn-sm" onclick="endGame()">Terminer</button>
+    </div>
+  </header>
+
+  <!-- Colonne gauche : Joueurs + Équipes -->
+  <aside class="host-left">
+
+    <!-- Buzz -->
+    <div class="card">
+      <h2>Buzzer</h2>
+      <div class="buzz-indicator" id="buzz-indicator">En attente...</div>
+      <div class="buzz-controls" style="margin-top:.75rem;">
+        <button class="btn btn-ghost btn-sm" id="btn-reset-buzz" disabled>
+          🔄 Débloquer
+        </button>
+        <button class="btn btn-success btn-sm" id="btn-good-answer" disabled>
+          ✅ Bonne réponse
+        </button>
+        <button class="btn btn-danger btn-sm" id="btn-wrong-answer" disabled>
+          ❌ Mauvaise réponse
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btn-manual-score" style="grid-column:1/-1">
+          ✏️ Points manuels
+        </button>
+      </div>
+    </div>
+
+    <!-- Joueurs -->
+    <div class="card" style="flex:1; min-height:0;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem;">
+        <h2 style="margin:0;">Joueurs <span id="player-count" class="badge badge-primary">0</span></h2>
+      </div>
+      <div id="players-list" class="list-scroll">
+        <div class="empty-state">En attente de joueurs...</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Colonne centrale : YouTube -->
+  <main class="host-center">
+    <div class="card">
+      <h2>Lecteur YouTube</h2>
+
+      <div class="yt-url-row" style="margin-bottom:.75rem;">
+        <input type="text" id="yt-url-input" placeholder="URL vidéo ou playlist YouTube..." />
+        <button class="btn btn-primary" id="btn-yt-load">Charger</button>
+      </div>
+
+      <div id="yt-placeholder" class="yt-placeholder">
+        <div class="yt-icon">▶️</div>
+        <p>Entrez une URL YouTube pour commencer</p>
+        <p style="font-size:.8rem; color: var(--text-muted);">Vidéo ou playlist – synchronisé pour tous</p>
+      </div>
+      <div id="yt-wrapper" class="yt-wrapper hidden">
+        <div id="yt-player"></div>
+      </div>
+
+      <div class="yt-controls" style="margin-top:.75rem;" id="yt-controls">
+        <button class="btn btn-primary btn-sm" id="btn-yt-play">▶ Play</button>
+        <button class="btn btn-ghost btn-sm" id="btn-yt-pause">⏸ Pause</button>
+        <button class="btn btn-ghost btn-sm" id="btn-yt-prev">⏮ Préc.</button>
+        <button class="btn btn-ghost btn-sm" id="btn-yt-next">⏭ Suiv.</button>
+        <button class="btn btn-ghost btn-sm" id="btn-yt-mute">🔇 Mute</button>
+        <label class="text-muted" style="font-size:.85rem; display:flex; align-items:center; gap:.4rem;">
+          <input type="checkbox" id="yt-sync-toggle" checked>
+          Sync joueurs
+        </label>
+      </div>
+    </div>
+
+    <!-- Scoreboard -->
+    <div class="card">
+      <h2>Classement</h2>
+      <div id="scoreboard" class="list-scroll">
+        <div class="empty-state">Aucun joueur</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Colonne droite : Équipes -->
+  <aside class="host-right">
+
+    <div class="card">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem;">
+        <h2 style="margin:0;">Équipes</h2>
+        <button class="btn btn-primary btn-sm" id="btn-add-team">+ Équipe</button>
+      </div>
+      <div id="teams-list" class="list-scroll">
+        <div class="empty-state">Aucune équipe</div>
+      </div>
+    </div>
+
+    <div class="card" style="flex:1; min-height:0;">
+      <h2>Assigner les joueurs</h2>
+      <p class="text-muted" style="font-size:.85rem; margin-bottom:.75rem;">
+        Glissez chaque joueur dans une équipe
+      </p>
+      <div id="assign-list" class="list-scroll">
+        <div class="empty-state">Aucun joueur</div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ═══ MODAL : Points manuels ═══ -->
+<div id="modal-score" class="modal-overlay hidden">
+  <div class="modal">
+    <h2>Modifier les points</h2>
+    <div id="modal-score-list" class="list-scroll" style="max-height:300px; overflow-y:auto;"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-score')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL : Créer équipe ═══ -->
+<div id="modal-team" class="modal-overlay hidden">
+  <div class="modal">
+    <h2>Nouvelle équipe</h2>
+    <div class="form-group">
+      <label>Nom de l'équipe</label>
+      <input type="text" id="team-name-input" placeholder="Les Rockeurs..." maxlength="24" />
+    </div>
+    <div class="form-group">
+      <label>Couleur</label>
+      <div class="color-picker-row" id="color-picker"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-team')">Annuler</button>
+      <button class="btn btn-primary" id="btn-confirm-team">Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toasts"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/host.js"></script>
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>

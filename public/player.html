@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Joueur – BlindTest</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!-- ═══ ÉCRAN DE CONNEXION ═══ -->
+<div id="screen-join" class="join-page">
+  <div class="join-card">
+    <div class="jc-title">
+      <span class="jc-icon">🎮</span>
+      <h1>Rejoindre</h1>
+      <p>Entrez le code de la partie et votre pseudo</p>
+    </div>
+
+    <div class="form-group">
+      <label>Code de la partie</label>
+      <input type="text" id="input-code" placeholder="EX: ABC123"
+             maxlength="6" autocomplete="off" autocapitalize="characters"
+             style="text-transform:uppercase; letter-spacing:.15em; font-size:1.4rem; text-align:center; font-weight:800;" />
+    </div>
+
+    <div class="form-group">
+      <label>Ton pseudo</label>
+      <input type="text" id="input-name" placeholder="SuperStar42" maxlength="20" autocomplete="off" />
+    </div>
+
+    <p id="join-error" class="error-msg hidden"></p>
+
+    <button class="btn btn-primary w-full" id="btn-join" style="padding:.9rem; font-size:1.05rem;">
+      Rejoindre
+    </button>
+
+    <p class="text-center text-muted" style="font-size:.85rem;">
+      <a href="/" style="color:var(--primary-h);">← Retour à l'accueil</a>
+    </p>
+  </div>
+</div>
+
+<!-- ═══ INTERFACE JOUEUR ═══ -->
+<div id="screen-player" class="player-page hidden">
+
+  <!-- Header -->
+  <header class="player-header">
+    <div>
+      <div class="p-name" id="p-name-display"></div>
+      <div class="p-room text-muted" id="p-room-display"></div>
+    </div>
+    <div id="p-team-badge" class="hidden team-badge"></div>
+    <div class="p-score" id="p-score-display">0</div>
+  </header>
+
+  <!-- Zone principale -->
+  <main class="player-main" id="player-main">
+
+    <!-- Lobby -->
+    <div id="lobby-message" class="lobby-message">
+      <div class="lm-icon">⏳</div>
+      <h2>En attente de l'animateur...</h2>
+      <p class="text-muted">La partie va bientôt commencer</p>
+    </div>
+
+    <!-- Buzzer (affiché quand status = playing) -->
+    <div id="buzz-area" class="hidden" style="display:flex; flex-direction:column; align-items:center; gap:1.5rem; width:100%;">
+      <button class="buzz-btn" id="buzz-btn">
+        <span class="buzz-icon">🔔</span>
+        <span class="buzz-label">BUZZ!</span>
+      </button>
+    </div>
+
+    <!-- Overlay buzz (qui a buzzé) -->
+    <div id="buzz-status" class="buzz-status hidden">
+      <div id="buzz-status-card" class="buzz-status-card">
+        <div class="bsc-icon" id="bsc-icon">🎉</div>
+        <div class="bsc-title" id="bsc-title">Tu as buzzé !</div>
+        <div class="bsc-name" id="bsc-name"></div>
+      </div>
+    </div>
+
+    <!-- YouTube player (optionnel, caché par défaut) -->
+    <div id="yt-player-wrapper" class="hidden" style="width:100%; max-width:480px;">
+      <div id="yt-player-p"></div>
+    </div>
+    <button id="btn-toggle-yt" class="btn btn-ghost btn-sm hidden">
+      🎵 Afficher le lecteur
+    </button>
+
+  </main>
+
+  <!-- Footer : scores -->
+  <footer class="player-footer">
+    <div id="player-scores-mini" class="player-scores-mini">
+      <!-- Scores compacts -->
+    </div>
+  </footer>
+
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toasts"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/player.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
