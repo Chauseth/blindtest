@@ -81,13 +81,16 @@
       </div>
     </div>
 
-    <!-- YouTube player (optionnel, caché par défaut) -->
-    <div id="yt-player-wrapper" class="hidden" style="width:100%; max-width:480px;">
+    <!-- YouTube player (caché, synchronisé depuis l'animateur) -->
+    <div id="yt-player-wrapper" class="hidden">
       <div id="yt-player-p"></div>
     </div>
-    <button id="btn-toggle-yt" class="btn btn-ghost btn-sm hidden">
-      🎵 Afficher le lecteur
-    </button>
+
+    <!-- Contrôle de volume (affiché quand la musique est active) -->
+    <div id="volume-control" class="volume-control hidden">
+      <span id="volume-icon" class="volume-icon">🔊</span>
+      <input type="range" id="volume-slider" min="0" max="100" value="70" class="volume-slider">
+    </div>
 
   </main>
 
