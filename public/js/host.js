@@ -12,6 +12,8 @@ let round = 1;
 let ytPlayer = null;
 let ytReady = false;
 let ytMuted = false;
+let currentVideoId = null;
+let currentPlaylistId = null;
 let selectedColor = '#7c6aff';
 let pointsPerBuzz = 1;
 let keepAliveInterval = null;
@@ -447,6 +449,9 @@ function loadYoutube() {
     });
   }
 
+  currentVideoId = parsed.videoId;
+  currentPlaylistId = parsed.playlistId;
+
   if ($('yt-sync-toggle').checked) {
     socket.emit('youtube-sync', {
       action: 'load',
@@ -500,6 +505,18 @@ socket.on('player-joined', ({ players: p }) => {
   renderScoreboard();
   renderAssign();
   toast(`Un joueur a rejoint la partie`, 'info');
+});
+
+socket.on('sync-new-player', ({ socketId }) => {
+  if (!ytPlayer || !ytReady) return;
+  const ct = ytPlayer.getCurrentTime() || 0;
+  socket.emit('youtube-sync-direct', {
+    socketId,
+    action: 'load',
+    videoId: currentVideoId,
+    playlistId: currentPlaylistId,
+    currentTime: ct,
+  });
 });
 
 socket.on('player-left', ({ playerName, players: p }) => {
