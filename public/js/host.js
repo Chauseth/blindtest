@@ -14,6 +14,7 @@ let ytReady = false;
 let ytMuted = false;
 let selectedColor = '#7c6aff';
 let pointsPerBuzz = 1;
+let keepAliveInterval = null;
 
 const TEAM_COLORS = [
   '#7c6aff', '#ff6b8a', '#2ecc71', '#f1c40f',
@@ -79,6 +80,7 @@ function createRoom() {
     screenCreate.classList.add('hidden');
     screenHost.classList.remove('hidden');
     toast(`Partie créée ! Code : ${roomCode}`, 'success');
+    keepAliveInterval = setInterval(() => fetch('/ping').catch(() => {}), 5 * 60 * 1000);
   });
 }
 
