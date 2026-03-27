@@ -330,6 +330,25 @@ socket.on('youtube-sync', ({ action, videoId, playlistId, currentTime }) => {
   if (action === 'prev')  { ytPlayer.previousVideo(); }
 });
 
+socket.on('answer-result', ({ correct, playerName, playerId }) => {
+  const isMe = playerId === socket.id;
+  if (correct) {
+    if (isMe) {
+      toast('Bonne réponse ! +1 pt 🎉', 'success');
+      flashBackground('green');
+    } else {
+      toast(`${playerName} a trouvé la réponse !`, 'info');
+    }
+  } else {
+    if (isMe) {
+      toast('Mauvaise réponse...', 'error');
+      flashBackground('red');
+    } else {
+      toast(`Mauvaise réponse de ${playerName}`, 'info');
+    }
+  }
+});
+
 socket.on('kicked', () => {
   alert('Vous avez été exclu de la partie.');
   window.location.href = '/';

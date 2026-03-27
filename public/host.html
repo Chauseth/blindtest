@@ -42,9 +42,9 @@
     </div>
 
     <div class="round-display">
-      <span class="text-muted" style="font-size:.85rem;">Manche</span>
+      <span class="round-label">Manche</span>
       <button class="btn btn-ghost btn-icon btn-sm" id="btn-round-dec">−</button>
-      <span id="round-val">1</span>
+      <span class="round-val" id="round-val">1</span>
       <button class="btn btn-ghost btn-icon btn-sm" id="btn-round-inc">+</button>
     </div>
 
@@ -54,30 +54,8 @@
     </div>
   </header>
 
-  <!-- Colonne gauche : Joueurs + Équipes -->
+  <!-- Colonne gauche : Joueurs -->
   <aside class="host-left">
-
-    <!-- Buzz -->
-    <div class="card">
-      <h2>Buzzer</h2>
-      <div class="buzz-indicator" id="buzz-indicator">En attente...</div>
-      <div class="buzz-controls" style="margin-top:.75rem;">
-        <button class="btn btn-ghost btn-sm" id="btn-reset-buzz" disabled>
-          🔄 Débloquer
-        </button>
-        <button class="btn btn-success btn-sm" id="btn-good-answer" disabled>
-          ✅ Bonne réponse
-        </button>
-        <button class="btn btn-danger btn-sm" id="btn-wrong-answer" disabled>
-          ❌ Mauvaise réponse
-        </button>
-        <button class="btn btn-ghost btn-sm" id="btn-manual-score" style="grid-column:1/-1">
-          ✏️ Points manuels
-        </button>
-      </div>
-    </div>
-
-    <!-- Joueurs -->
     <div class="card" style="flex:1; min-height:0;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem;">
         <h2 style="margin:0;">Joueurs <span id="player-count" class="badge badge-primary">0</span></h2>
@@ -86,11 +64,26 @@
         <div class="empty-state">En attente de joueurs...</div>
       </div>
     </div>
-
   </aside>
 
-  <!-- Colonne centrale : YouTube -->
+  <!-- Colonne centrale : Buzz + YouTube + Classement -->
   <main class="host-center">
+
+    <!-- Buzz -->
+    <div class="card buzz-card">
+      <div class="buzz-card-header">
+        <h2 style="margin:0;">Buzzer</h2>
+        <button class="btn btn-ghost btn-sm" id="btn-manual-score">✏️ Points</button>
+      </div>
+      <div class="buzz-indicator" id="buzz-indicator">En attente...</div>
+      <div class="buzz-controls">
+        <button class="btn btn-ghost btn-sm" id="btn-reset-buzz" disabled>Débloquer</button>
+        <button class="btn btn-success btn-sm" id="btn-good-answer" disabled>✔ Correct</button>
+        <button class="btn btn-danger btn-sm" id="btn-wrong-answer" disabled>✘ Faux</button>
+      </div>
+    </div>
+
+    <!-- YouTube -->
     <div class="card">
       <h2>Lecteur YouTube</h2>
 
@@ -111,10 +104,10 @@
       <div class="yt-controls" style="margin-top:.75rem;" id="yt-controls">
         <button class="btn btn-primary btn-sm" id="btn-yt-play">▶ Play</button>
         <button class="btn btn-ghost btn-sm" id="btn-yt-pause">⏸ Pause</button>
-        <button class="btn btn-ghost btn-sm" id="btn-yt-prev">⏮ Préc.</button>
-        <button class="btn btn-ghost btn-sm" id="btn-yt-next">⏭ Suiv.</button>
-        <button class="btn btn-ghost btn-sm" id="btn-yt-mute">🔇 Mute</button>
-        <label class="text-muted" style="font-size:.85rem; display:flex; align-items:center; gap:.4rem;">
+        <button class="btn btn-ghost btn-sm" id="btn-yt-prev">&#9664;&#9664; Préc.</button>
+        <button class="btn btn-ghost btn-sm" id="btn-yt-next">Suiv. &#9654;&#9654;</button>
+        <button class="btn btn-ghost btn-sm" id="btn-yt-mute">Mute</button>
+        <label class="yt-sync-label">
           <input type="checkbox" id="yt-sync-toggle" checked>
           Sync joueurs
         </label>

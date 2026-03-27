@@ -133,7 +133,7 @@ input::placeholder { color: var(--text-muted); }
 .host-layout {
   display: grid;
   grid-template-rows: auto 1fr;
-  grid-template-columns: 340px 1fr 300px;
+  grid-template-columns: 240px 1fr 300px;
   min-height: 100vh;
   gap: 0;
 }
@@ -141,8 +141,9 @@ input::placeholder { color: var(--text-muted); }
 .host-header {
   grid-column: 1 / -1;
   background: var(--surface); border-bottom: 1px solid var(--border);
-  padding: .75rem 1.5rem;
-  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  padding: .6rem 1.25rem;
+  display: flex; align-items: center; gap: 1rem;
+  min-height: 56px;
 }
 .host-header .logo { font-size: 1.3rem; font-weight: 800; color: var(--primary); }
 .host-header .room-code-display {
@@ -169,21 +170,30 @@ input::placeholder { color: var(--text-muted); }
 .host-left  { border-right: 1px solid var(--border); }
 .host-right { border-left: 1px solid var(--border); }
 
-/* ─── Section Buzz Controls ─── */
-.buzz-controls {
-  display: grid; grid-template-columns: 1fr 1fr; gap: .5rem;
+/* ─── Buzz card (centrale) ─── */
+.buzz-card { }
+.buzz-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: .75rem;
 }
+
+.buzz-controls {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .5rem;
+  margin-top: .75rem;
+}
+
 .buzz-indicator {
   background: var(--surface2); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 1rem; text-align: center;
-  grid-column: 1 / -1; min-height: 60px;
+  border-radius: var(--radius); padding: 1rem 1.5rem; text-align: center;
+  min-height: 64px;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1.1rem;
+  font-weight: 700; font-size: 1.15rem;
   transition: var(--trans);
 }
 .buzz-indicator.active {
   background: rgba(255,59,92,.1); border-color: var(--buzz);
-  color: var(--buzz); animation: pulse-border .8s ease infinite;
+  color: var(--buzz); font-size: 1.3rem;
+  animation: pulse-border .8s ease infinite;
 }
 @keyframes pulse-border {
   0%,100% { box-shadow: 0 0 0 0 var(--buzz-glow); }
@@ -226,7 +236,14 @@ input::placeholder { color: var(--text-muted); }
   color: var(--text-muted);
 }
 .yt-placeholder .yt-icon { font-size: 2.5rem; }
-.yt-controls { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+.yt-controls {
+  display: flex; gap: .4rem; align-items: center; flex-wrap: nowrap;
+}
+.yt-sync-label {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .82rem; color: var(--text-muted);
+  margin-left: auto; white-space: nowrap;
+}
 .yt-url-row { display: flex; gap: .5rem; }
 .yt-url-row input { flex: 1; }
 
@@ -315,22 +332,26 @@ input::placeholder { color: var(--text-muted); }
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 1rem; pointer-events: none; transition: opacity .3s ease;
+  background: rgba(13,13,26,.82);
+  backdrop-filter: blur(6px);
+  border-radius: inherit;
 }
-.buzz-status.hidden { opacity: 0; }
+.buzz-status.hidden { opacity: 0; pointer-events: none; }
 
 .buzz-status-card {
-  background: var(--surface); border: 2px solid var(--border);
-  border-radius: 18px; padding: 1.5rem 2.5rem; text-align: center;
-  max-width: 340px;
+  background: var(--surface2); border: 2px solid var(--border);
+  border-radius: 18px; padding: 1.75rem 2.5rem; text-align: center;
+  max-width: 340px; width: 90%;
+  box-shadow: 0 16px 48px rgba(0,0,0,.5);
 }
 .buzz-status-card.my-buzz {
   border-color: var(--green);
-  background: rgba(46,204,113,.1);
+  background: rgba(46,204,113,.18);
   animation: pop-in .3s cubic-bezier(.175,.885,.32,1.275);
 }
 .buzz-status-card.other-buzz {
   border-color: var(--yellow);
-  background: rgba(241,196,15,.08);
+  background: rgba(241,196,15,.15);
   animation: pop-in .3s cubic-bezier(.175,.885,.32,1.275);
 }
 @keyframes pop-in {
@@ -486,6 +507,9 @@ input::placeholder { color: var(--text-muted); }
 
 /* ─── Round indicator ─── */
 .round-display {
-  display: flex; align-items: center; gap: .75rem;
+  display: flex; align-items: center; gap: .4rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: .25rem .6rem;
 }
-.round-display span { font-size: 1.2rem; font-weight: 800; color: var(--primary-h); }
+.round-display .round-label { font-size: .75rem; color: var(--text-muted); }
+.round-display .round-val { font-size: 1rem; font-weight: 800; color: var(--primary-h); min-width: 1.2rem; text-align: center; }

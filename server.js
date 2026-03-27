@@ -204,6 +204,22 @@ io.on('connection', (socket) => {
     io.to(socket.roomCode).emit('round-updated', { round });
   });
 
+  // Résultat d'une réponse (bonne/mauvaise) → notifier tous les joueurs
+  socket.on('answer-result', ({ correct, playerId }) => {
+    const room = rooms[socket.roomCode];
+    if (!room || !socket.isHost) return;
+    const player = room.players[playerId];
+    if (!player) return;
+    io.to(socket.roomCode).emit('answer-result', { correct, playerName: player.name, playerId });
+  });
+
+  // Sync YouTube ciblée vers un joueur spécifique (nouveau joueur qui rejoint)
+  socket.on('youtube-sync-direct', ({ socketId, action, videoId, playlistId, currentTime }) => {
+    const room = rooms[socket.roomCode];
+    if (!room || !socket.isHost) return;
+    io.to(socketId).emit('youtube-sync', { action, videoId, playlistId, currentTime });
+  });
+
   // Sync YouTube : l'animateur envoie l'état du lecteur
   socket.on('youtube-sync', ({ action, videoId, currentTime, playlistId }) => {
     const room = rooms[socket.roomCode];
@@ -254,6 +270,11 @@ io.on('connection', (socket) => {
     });
 
     callback({ success: true, room: getRoomState(room) });
+
+    // Si une vidéo est déjà chargée, demander à l'hôte de syncer le nouveau joueur
+    if (room.currentTrack) {
+      io.to(room.hostSocketId).emit('sync-new-player', { socketId: socket.id });
+    }
     console.log(`${cleanName} a rejoint ${upperCode}`);
   });
 
