@@ -143,6 +143,8 @@ function resetBuzz() {
 function handleAnswer(correct) {
   if (!buzzedBy) return;
 
+  socket.emit('answer-result', { correct, playerId: buzzedBy.id });
+
   if (correct) {
     socket.emit('update-score', { playerId: buzzedBy.id, delta: pointsPerBuzz });
     toast(`+${pointsPerBuzz} pt pour ${buzzedBy.name}`, 'success');
